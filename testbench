@@ -1,0 +1,85 @@
+`timescale 1ns/1ps
+
+module calculator_tb;
+
+reg [7:0] A, B;
+reg [2:0] sel;
+
+wire [7:0] result;
+wire carry, overflow, zero;
+
+calculator uut (
+    .A(A),
+    .B(B),
+    .sel(sel),
+    .result(result),
+    .carry(carry),
+    .overflow(overflow),
+    .zero(zero)
+);
+
+initial begin
+
+    $dumpfile("calculator.vcd");
+    $dumpvars(0, calculator_tb);
+
+    $display("A    B    SEL   RESULT   C   OV   Z");
+
+    A = 8'd20; B = 8'd10;
+
+    sel = 3'b000; #10;
+    $display("%d   %d    ADD    %d      %b   %b   %b",
+             A, B, result, carry, overflow, zero);
+
+    sel = 3'b001; #10;
+    $display("%d   %d    SUB    %d      %b   %b   %b",
+             A, B, result, carry, overflow, zero);
+
+    sel = 3'b010; #10;
+    $display("%d   %d    AND    %d      %b   %b   %b",
+             A, B, result, carry, overflow, zero);
+
+    sel = 3'b011; #10;
+    $display("%d   %d    OR     %d      %b   %b   %b",
+             A, B, result, carry, overflow, zero);
+
+    sel = 3'b100; #10;
+    $display("%d   %d    XOR    %d      %b   %b   %b",
+             A, B, result, carry, overflow, zero);
+
+    sel = 3'b101; #10;
+    $display("%d   %d    NOT    %d      %b   %b   %b",
+             A, B, result, carry, overflow, zero);
+
+    sel = 3'b110; #10;
+    $display("%d   %d    SHL    %d      %b   %b   %b",
+             A, B, result, carry, overflow, zero);
+
+    sel = 3'b111; #10;
+    $display("%d   %d    SHR    %d      %b   %b   %b",
+             A, B, result, carry, overflow, zero);
+
+    // Test arithmetic overflow
+    A = 8'd127; B = 8'd1;
+    sel = 3'b000; #10;
+    $display("Overflow test: result=%d, overflow=%b",
+             result, overflow);
+
+    // Test carry
+    A = 8'd255; B = 8'd1;
+    sel = 3'b000; #10;
+    $display("Carry test: result=%d, carry=%b",
+             result, carry);
+
+    // Test zero
+    A = 8'd10; B = 8'd10;
+    sel = 3'b001; #10;
+    $display("Zero test: result=%d, zero=%b",
+             result, zero);
+
+    $display("TESTBENCH COMPLETED");
+
+    $finish;
+end
+
+endmodule
